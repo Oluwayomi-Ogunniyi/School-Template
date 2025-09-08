@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triple T School - Parent Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-bounce-slow { animation: bounce 2s ease-in-out infinite; }
+    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+    .hover-scale { transition: transform 0.3s ease; }
+    .hover-scale:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Color Theme: Matches Triple T School logo
+    const theme = {
+      primary: 'bg-gradient-to-r from-yellow-500 to-red-700',
+      secondary: 'bg-yellow-500',
+      accent: 'bg-red-700',
+      text: 'text-brown-800',
+      light: 'bg-brown-100',
+    };
+
+    // Navigation Component
+    function Navbar() {
+      const [isOpen, setIsOpen] = useState(false);
+      const [dropdown, setDropdown] = useState(null);
+
+      const navItems = {
+        Home: { link: './index.html' },
+        About: {
+          items: [
+            { name: 'About Us', link: './about.html' },
+            { name: 'Contact', link: './contact.html' },
+          ],
+        },
+        Academics: { link: './academics.html' },
+        Admissions: { link: './admission.html' },
+        Community: {
+          items: [
+            { name: 'Parent Portal', link: './parentportal.html' },
+            { name: 'Staff Directory', link: './staff.html' },
+            { name: 'News & Updates', link: './newsupdates.html' },
+            { name: 'Gallery', link: './gallery.html' },
+          ],
+        },
+      };
+
+      return (
+        <nav className={`${theme.primary} text-white p-4 sticky top-0 z-50 shadow-lg`}>
+          <div className="container mx-auto flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Triple T School</h1>
+            <button
+              className="md:hidden focus:outline-none"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              </svg>
+            </button>
+            <ul className={`md:flex space-x-6 ${isOpen ? 'block' : 'hidden'} md:block absolute md:static bg-yellow-500 md:bg-transparent w-full md:w-auto left-0 top-16 p-4 md:p-0`}>
+              {Object.entries(navItems).map(([key, value]) => (
+                <li key={key} className="relative">
+                  {value.items ? (
+                    <>
+                      <button
+                        onClick={() => setDropdown(dropdown === key ? null : key)}
+                        className="hover:text-yellow-300 transition-colors duration-300 focus:outline-none"
+                        aria-haspopup="true"
+                        aria-expanded={dropdown === key}
+                      >
+                        {key} <span>{dropdown === key ? '▲' : '▼'}</span>
+                      </button>
+                      {dropdown === key && (
+                        <ul className="absolute md:left-0 mt-2 w-48 bg-gradient-to-b from-yellow-500/80 to-red-700/80 rounded-md shadow-lg py-2 z-50 animate-fade-in">
+                          {value.items.map((item, idx) => (
+                            <li key={idx} className="px-4 py-2 hover:bg-yellow-500/50">
+                              <a
+                                href={item.link}
+                                className="block text-white hover:text-yellow-300 transition-colors duration-300"
+                                onClick={() => setDropdown(null)}
+                              >
+                                {item.name}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <a
+                      href={value.link}
+                      className="hover:text-yellow-300 transition-colors duration-300 focus:outline-none hover-scale"
+                    >
+                      {key}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+      );
+    }
+
+    // Parent Portal Dashboard Component
+    function ParentPortalDashboard() {
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+      useEffect(() => {
+        // Simulate login check (replace with actual authentication logic)
+        setTimeout(() => setIsLoggedIn(true), 1000);
+      }, []);
+
+      if (!isLoggedIn) {
+        return (
+          <section className={`${theme.light} py-20 text-center animate-fade-in`}>
+            <h2 className={`text-4xl font-bold ${theme.text} mb-4`}>Parent Portal</h2>
+            <p className="text-lg max-w-2xl mx-auto mb-6">Please log in to access your dashboard.</p>
+            <a
+              href="#login"
+              className={`${theme.secondary} text-gray-800 py-3 px-6 rounded-full font-semibold hover-scale hover:shadow-lg transition-all duration-300`}
+            >
+              Log In
+            </a>
+          </section>
+        );
+      }
+
+      return (
+        <section className={`${theme.light} py-16 container mx-auto animate-fade-in`}>
+          <h2 className={`text-3xl font-bold ${theme.text} text-center mb-8`}>Parent Portal Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-lg shadow-lg hover-scale">
+              <h3 className={`text-xl font-semibold ${theme.text} mb-2`}>Child Overview</h3>
+              <p>Attendance: 95% | Grades: A- | Next Event: Science Fair (Nov 15)</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg hover-scale">
+              <h3 className={`text-xl font-semibold ${theme.text} mb-2`}>Quick Actions</h3>
+              <a href="#messages" className={`${theme.secondary} text-gray-800 py-2 px-4 rounded-full font-semibold hover-scale mr-2`}>Messages</a>
+              <a href="#resources" className={`${theme.secondary} text-gray-800 py-2 px-4 rounded-full font-semibold hover-scale`}>Resources</a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Calendar Component
+    function Calendar() {
+      return (
+        <section id="calendar" className="py-16 container mx-auto">
+          <h2 className={`text-3xl font-bold ${theme.text} text-center mb-8 animate-fade-in`}>School Calendar</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p>Sync with upcoming events and holidays. (Placeholder for React-Calendar integration)</p>
+            <a href="#" className={`${theme.secondary} text-gray-800 py-3 px-6 rounded-full font-semibold hover-scale mt-4 inline-block`}>Sync Calendar</a>
+          </div>
+        </section>
+      );
+    }
+
+    // Message Center Component
+    function MessageCenter() {
+      const [message, setMessage] = useState('');
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        alert(`Message sent: ${message}`);
+        setMessage('');
+      };
+
+      return (
+        <section id="messages" className="py-16 container mx-auto">
+          <h2 className={`text-3xl font-bold ${theme.text} text-center mb-8 animate-fade-in`}>Message Center</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="w-full p-3 border rounded-lg"
+              />
+              <button
+                type="submit"
+                className={`${theme.secondary} text-gray-800 py-2 px-6 rounded-full font-semibold hover-scale`}
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </section>
+      );
+    }
+
+    // Resource Downloads Component
+    function ResourceDownloads() {
+      return (
+        <section id="resources" className="py-16 container mx-auto">
+          <h2 className={`text-3xl font-bold ${theme.text} text-center mb-8 animate-fade-in`}>Resource Downloads</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <ul className="space-y-2">
+              <li><a href="#" className={`${theme.accent} text-white py-2 px-4 rounded-full hover-scale inline-block`}>Handbook 2025.pdf</a></li>
+              <li><a href="#" className={`${theme.accent} text-white py-2 px-4 rounded-full hover-scale inline-block`}>Newsletter Sep 2025.pdf</a></li>
+            </ul>
+          </div>
+        </section>
+      );
+    }
+
+    // Footer Component
+    function Footer() {
+      return (
+        <footer className={`${theme.primary} text-white py-8`}>
+          <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+              <h3 className="text-lg font-bold mb-4">Triple T School</h3>
+              <p>123 Learning Lane, Education City</p>
+              <p>Email: info@tripletschool.org</p>
+              <p>Phone: (123) 456-7890</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                {['About', 'Academics', 'Admissions', 'Contact', 'Parent Portal', 'Staff Directory', 'Gallery', 'News & Updates'].map((item) => (
+                <li key={item}>
+                  <a href={item === 'Parent Portal' ? './parentportal.html' : item === 'Staff Directory' ? './staff.html' : item === 'Academics' ? './academics.html' : item === 'Admissions' ? './admission.html' : item === 'Contact' ? './contact.html' : item === 'Gallery' ? './gallery.html' : item === 'News & Updates' ? './newsupdates.html' : item === 'About' ? './about.html' : `#${item.toLowerCase().replace(' ', '-')}`} className="hover:text-yellow-300 transition-colors duration-300">
+                    {item}
+                  </a>
+                </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+              <div className="flex justify-center md:justify-start space-x-4">
+                <a href="#" className="hover:text-yellow-300">Facebook</a>
+                <a href="#" className="hover:text-yellow-300">Twitter</a>
+                <a href="#" className="hover:text-yellow-300">Instagram</a>
+              </div>
+            </div>
+          </div>
+          <div className="container mx-auto text-center mt-4 text-sm text-white">
+            <p>Website designed and developed by <a href="https://theqlip.digital" target="_blank" rel="noopener noreferrer" className="underline hover:text-yellow-300">The Qlip</a>.</p>
+          </div>
+        </footer>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      return (
+        <div>
+          <Navbar />
+          <ParentPortalDashboard />
+          <Calendar />
+          <MessageCenter />
+          <ResourceDownloads />
+          <Footer />
+        </div>
+      );
+    }
+
+    // Render the App
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
